@@ -2,18 +2,29 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>block-blast</title>
+
+  <title>Block Blast</title>
+
   <link rel="stylesheet" href="style.css">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#001a40">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+
 <body>
- <div id="game-container">
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
-    <div id="score">Очки: 0</div>
-    <div id="next-blocks"></div>
-    <button id="resetBtn">Скидання</button>
+
+<div id="game-container">
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <div id="score">Очки: 0</div>
+  <div id="next-blocks"></div>
+  <button id="resetBtn">Скидання</button>
 </div>
-  <script src="script.js"></script>
+
+<script src="script.js"></script>
+
 </body>
 </html>
-
 
