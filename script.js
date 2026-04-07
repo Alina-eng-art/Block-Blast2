@@ -4,31 +4,9 @@ const scoreDisplay = document.getElementById('score');
 const nextBlocksDiv = document.getElementById('next-blocks');
 const resetBtn = document.getElementById('resetBtn');
 
-/* ---------- ADAPTIVE CANVAS ---------- */
-
-function resizeCanvas() {
-  const size = Math.min(window.innerWidth - 40, 400);
-  canvas.width = size;
-  canvas.height = size;
-}
-
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-/* ---------- GRID ---------- */
-
 const gridSize = 40;
-let cols = canvas.width / gridSize;
-let rows = canvas.height / gridSize;
-
-function updateGridSize() {
-  cols = Math.floor(canvas.width / gridSize);
-  rows = Math.floor(canvas.height / gridSize);
-}
-
-updateGridSize();
-
-/* ---------- DATA ---------- */
+const cols = canvas.width / gridSize;
+const rows = canvas.height / gridSize;
 
 let score = 0;
 
@@ -44,19 +22,14 @@ const blockShapes = [
   [[1,1,1],[1,1,1],[1,1,1]]
 ];
 
-let grid = [];
+let grid = Array(rows).fill().map(()=>Array(cols).fill(0));
 let nextBlocks = [];
 let selectedBlock = null;
-let offsetX = 0, offsetY = 0;
-let mouseX = 0, mouseY = 0;
 
-/* ---------- INIT GRID ---------- */
-
-function createGrid(){
-  grid = Array(rows).fill().map(()=>Array(cols).fill(0));
-}
-
-createGrid();
+let offsetX = 0;
+let offsetY = 0;
+let mouseX = 0;
+let mouseY = 0;
 
 /* ---------- GENERATE ---------- */
 
@@ -70,7 +43,7 @@ function generateNextBlocks() {
   });
 }
 
-/* ---------- DRAW ---------- */
+/* ---------- DRAW GRID ---------- */
 
 function drawGrid() {
   ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -84,12 +57,12 @@ function drawGrid() {
     }
   }
 
-  // preview
+  // превью блока
   if(selectedBlock){
     ctx.fillStyle = selectedBlock.color;
 
-    const gridX = Math.floor((mouseX - offsetX)/gridSize);
-    const gridY = Math.floor((mouseY - offsetY)/gridSize);
+    const gridX = Math.round((mouseX - offsetX)/gridSize);
+    const gridY = Math.round((mouseY - offsetY)/gridSize);
 
     for(let r=0;r<selectedBlock.shape.length;r++){
       for(let c=0;c<selectedBlock.shape[r].length;c++){
@@ -103,15 +76,15 @@ function drawGrid() {
   }
 }
 
-/* ---------- NEXT BLOCKS ---------- */
+/* ---------- DRAW NEXT ---------- */
 
 function drawNextBlocks() {
   nextBlocksDiv.innerHTML = '';
 
   nextBlocks.forEach((block,i)=>{
     const bCanvas = document.createElement('canvas');
-    bCanvas.width = block.shape[0].length * 30;
-    bCanvas.height = block.shape.length * 30;
+    bCanvas.width = block.shape[0].length * gridSize;
+    bCanvas.height = block.shape.length * gridSize;
     bCanvas.dataset.index = i;
 
     const bCtx = bCanvas.getContext('2d');
@@ -120,7 +93,7 @@ function drawNextBlocks() {
     for(let r=0;r<block.shape.length;r++){
       for(let c=0;c<block.shape[r].length;c++){
         if(block.shape[r][c]){
-          bCtx.fillRect(c*30,r*30,29,29);
+          bCtx.fillRect(c*gridSize,r*gridSize,gridSize-1,gridSize-1);
         }
       }
     }
@@ -201,7 +174,7 @@ function checkGameOver(){
   });
 }
 
-/* ---------- TOUCH + MOUSE ---------- */
+/* ---------- START DRAG ---------- */
 
 nextBlocksDiv.addEventListener('mousedown', startDrag);
 nextBlocksDiv.addEventListener('touchstart', startDrag);
@@ -213,11 +186,12 @@ function startDrag(e){
     const idx = parseInt(target.dataset.index);
     selectedBlock = {...nextBlocks[idx], index: idx};
 
-    const rect = target.getBoundingClientRect();
+    const rect = canvas.getBoundingClientRect();
     const touch = e.touches ? e.touches[0] : e;
 
-    offsetX = touch.clientX - rect.left;
-    offsetY = touch.clientY - rect.top;
+    // центр блока к пальцу
+    offsetX = (selectedBlock.shape[0].length * gridSize) / 2;
+    offsetY = (selectedBlock.shape.length * gridSize) / 2;
 
     mouseX = touch.clientX - rect.left;
     mouseY = touch.clientY - rect.top;
@@ -237,7 +211,9 @@ canvas.addEventListener('mousemove', e=>{
 canvas.addEventListener('touchmove', e=>{
   if(selectedBlock){
     e.preventDefault();
+
     const rect = canvas.getBoundingClientRect();
+
     mouseX = e.touches[0].clientX - rect.left;
     mouseY = e.touches[0].clientY - rect.top;
   }
@@ -251,8 +227,8 @@ canvas.addEventListener('touchend', dropBlock);
 function dropBlock(){
   if(!selectedBlock) return;
 
-  const gridX = Math.floor((mouseX - offsetX)/gridSize);
-  const gridY = Math.floor((mouseY - offsetY)/gridSize);
+  const gridX = Math.round((mouseX - offsetX)/gridSize);
+  const gridY = Math.round((mouseY - offsetY)/gridSize);
 
   if(canPlaceBlock(selectedBlock,gridX,gridY)){
     placeBlock(selectedBlock,gridX,gridY);
@@ -277,7 +253,7 @@ function dropBlock(){
 /* ---------- RESET ---------- */
 
 resetBtn.addEventListener('click', ()=>{
-  createGrid();
+  grid = Array(rows).fill().map(()=>Array(cols).fill(0));
   score = 0;
   scoreDisplay.textContent = `Очки: ${score}`;
   generateNextBlocks();
