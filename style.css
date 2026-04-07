@@ -4,54 +4,96 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    background: linear-gradient(135deg, #001a40, #003080); /* полностью синий градиент */
+    background: linear-gradient(135deg, #001a40, #003080);
     color: #fff;
     font-family: Arial, sans-serif;
+    padding: 10px;
 }
 
 /* ===== CONTAINER ===== */
 #game-container {
-    text-align:center;
+    text-align: center;
     background: rgba(10,30,60,0.9);
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 15px 50px rgba(0,0,0,0.5);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+    width: 100%;
+    max-width: 420px;
 }
 
 /* ===== SCORE ===== */
-#score { font-size:24px; margin-bottom:15px; color:#00cfff; text-shadow:0 0 10px #00cfff; }
+#score {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #00cfff;
+    text-shadow: 0 0 10px #00cfff;
+}
 
 /* ===== CANVAS ===== */
 #gameCanvas {
-    border:2px solid #00cfff;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    border: 2px solid #00cfff;
     background: rgba(0,15,40,0.8);
-    border-radius:15px;
+    border-radius: 15px;
     cursor: grab;
 }
 
 /* ===== NEXT BLOCKS ===== */
 #next-blocks {
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    margin-top:15px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
 }
+
 .next-block-canvas {
-    border:1px solid #00cfff;
-    border-radius:8px;
+    width: 60px;
+    height: 60px;
+    border: 1px solid #00cfff;
+    border-radius: 8px;
     background: rgba(0,15,40,0.6);
 }
 
 /* ===== RESET BUTTON ===== */
 #resetBtn {
-    margin-top:20px;
-    padding:10px 25px;
-    font-size:16px;
-    border:none;
-    border-radius:10px;
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 15px;
+    border: none;
+    border-radius: 10px;
     background: linear-gradient(135deg, #00c3ff, #0052ff);
-    color:#fff;
-    box-shadow:0 5px 15px rgba(0,0,0,0.3);
-    transition:0.3s;
+    color: #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: 0.3s;
+    width: 100%;
 }
-#resetBtn:hover { transform:scale(1.05); background: linear-gradient(135deg, #0052ff, #00c3ff); }
+
+#resetBtn:hover {
+    transform: scale(1.05);
+}
+
+/* 📱 МОБИЛКА */
+@media (max-width: 480px) {
+
+    #game-container {
+        padding: 15px;
+        border-radius: 15px;
+    }
+
+    #score {
+        font-size: 18px;
+    }
+
+    .next-block-canvas {
+        width: 50px;
+        height: 50px;
+    }
+
+    #resetBtn {
+        font-size: 14px;
+        padding: 8px;
+    }
+}
